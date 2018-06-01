@@ -1,0 +1,16 @@
+{
+    "name": "dollarphp/dollarphp",
+    "description": "a simply router",
+    "type": "project",
+    "license": "dollarphp.com",
+    "authors": [
+        {
+            "name": "lee",
+            "email": "complet@163.com"
+        }
+    ],
+    "autoload":{
+        "psr-4":{"dollarphp\\":""}
+    },
+    "require": {}
+}
