@@ -1,7 +1,4 @@
 <?php
-/**
- * @desc：自动加载配置文件
- */
 namespace dollarphp;
 /**
  * @desc：图片上传类
@@ -10,11 +7,12 @@ namespace dollarphp;
  * 2、验证图片类型是否合法
  * 3、验证图片尺寸是否合法
  * 4、验证图片大小是否合法
- * 5、支持缩放功能
- * 6、支持裁剪功能
- * 7、支持缩略图功能
+ * 5、支持获取图片信息功能
+ * 6、支持缩放功能
+ * 7、支持裁剪功能
+ * 8、支持缩略图功能
  */
-class fileuploader{
+class image{
     private $file;
     private $type;
     public $suffix = array();
@@ -202,10 +200,54 @@ class fileuploader{
                 $ret = false;
             }
         }else{  // base64文件
-            $size = filesize($file);
+            $info = file_get_contents($file);
+            $size = strlen($info);
             if(($size < $validSize['min']*1024*1024) || ($size > $validSize['max']*1024*1024)){
                 $ret = false;
             }
+        }
+        return $ret;
+    }
+    /*
+     @desc：获取图片信息
+     */
+    public function info(){
+        $file = $this->file;
+        $type = $this->type;
+        $ret = array();
+        if($type==1){   // 多文件
+            foreach($file['tmp_name'] as $k=>$v){
+                $measure = getimagesize($v);
+                $width = $measure[0];
+                $height = $measure[1];
+                $size = filesize($v)/1024/1024;
+                $ret[$k] = array(
+                        'width'=>$width,
+                        'height'=>$height,
+                        'size'=>number_format($size,2)
+                    );
+            }
+        }elseif($type==2){  // 单文件
+            $measure = getimagesize($file['tmp_name']);
+            $width = $measure[0];
+            $height = $measure[1];
+            $size = filesize($file['tmp_name'])/1024/1024;
+            $ret = array(
+                    'width'=>$width,
+                    'height'=>$height,
+                    'size'=>number_format($size,2)
+                );
+        }else{  // base64文件
+            $measure = getimagesize($file);
+            $width = $measure[0];
+            $height = $measure[1];
+            $info = file_get_contents($file);
+            $size = strlen($info)/1024/1024;
+            $ret = array(
+                    'width'=>$width,
+                    'height'=>$height,
+                    'size'=>number_format($size,2)
+                );
         }
         return $ret;
     }
