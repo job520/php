@@ -2,7 +2,6 @@
     "name": "dollarphp/dollarphp",
     "description": "a simply router",
     "type": "project",
-    "license": "dollarphp.com",
     "authors": [
         {
             "name": "lee",
