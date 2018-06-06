@@ -24,7 +24,7 @@ class errorhandle{
                         "error_file"=>$f,
                         "error_line"=>$l
                     );
-                ret(0,$arr);
+                ret(-1,$arr);
             }
         });
     }
@@ -41,7 +41,7 @@ class errorhandle{
                     'exception_file'=>$file,
                     'exception_line'=>$line
                 );
-            ret(0,$arr);
+            ret(-1,$arr);
         });
     }
 }
