@@ -11,7 +11,7 @@ namespace dollarphp;
  *     @param depth 深度 默认2
  *     @return void
  */
-class crawl{
+class scrawl{
     public $callcontent = 'getcontent';  #  获取给定url页面中的内容的回调函数
     public $calltodo = 'todo';  #  处理业务逻辑的回调函数 如：把抓取到的内容处理后存到数据库
     private $url;  #  内部属性：当前处理中的url
