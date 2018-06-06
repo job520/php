@@ -1,8 +1,9 @@
 <?php
+namespace dollarphp;
 /**
  * @desc：错误显示类
+ * @author [Lee] <[<complet@163.com>]>
  */
-namespace dollarphp;
 class errorhandle{
     /*
      构造方法：
@@ -23,10 +24,7 @@ class errorhandle{
                         "error_file"=>$f,
                         "error_line"=>$l
                     );
-                echo "<pre>";
-                var_dump($arr);
-                echo "</pre>";
-                exit;
+                ret(0,$arr);
             }
         });
     }
@@ -43,10 +41,7 @@ class errorhandle{
                     'exception_file'=>$file,
                     'exception_line'=>$line
                 );
-            echo "<pre>";
-            var_dump($arr);
-            echo "</pre>";
-            exit;
+            ret(0,$arr);
         });
     }
 }

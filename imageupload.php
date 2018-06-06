@@ -12,7 +12,7 @@ namespace dollarphp;
  * 7、支持裁剪功能
  * 8、支持缩略图功能
  */
-class image{
+class imageupload{
     private $file;
     private $type;
     public $suffix = array();
@@ -38,21 +38,24 @@ class image{
     }
     /*
      内部方法：获取图片类型
-     1、多文件
-     2、单文件
-     3、base64流文件
+     1、多文件（格式：'tmp_name'=>array(0,1),'name'=>array(0,1)）
+     2、多文件（格式：0=>array('tmp_name'=>'','name'=>'')）
+     3、单文件
+     4、base64流文件
      */
     private function getType(){
         $file = $this->file;
         if(is_array($file)){
-            // 多文件
+            // 多文件1
             if(is_array($file['name'])){
                 $type = 1;
-            }else{  // 单文件
+            }elseif(is_array($file[0])){  // 多文件2
                 $type = 2;
+            }else{  // 单文件
+                $type = 3;
             }
         }else{
-            $type = 3;
+            $type = 4;
         }
         $this->type = $type;
     }
@@ -120,7 +123,7 @@ class image{
         $type = $this->type;
         $validSuffix = $this->suffix;
         $ret = true;
-        if($type==1){   // 多文件
+        if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $v){
                 $suffix = $this->getSuffix($v);
                 if(!in_array($suffix,$validSuffix)){
@@ -128,7 +131,14 @@ class image{
                     break;
                 }
             }
-        }elseif($type==2){  // 单文件
+        }elseif($type==2){  // 多文件2
+            foreach($file as $v){
+                $suffix = $this->getSuffix($v['tmp_name']);
+                if(!in_array($suffix,$validSuffix)){
+                    $ret = false;
+                }
+            }
+        }elseif($type==3){  // 单文件
             $suffix = $this->getSuffix($file['tmp_name']);
             if(!in_array($suffix,$validSuffix)){
                 $ret = false;
@@ -150,7 +160,7 @@ class image{
         $type = $this->type;
         $validMeasure = $this->measure;
         $ret = true;
-        if($type==1){   // 多文件
+        if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $v){
                 $measure = getimagesize($v);
                 $width = $measure[0];
@@ -160,7 +170,16 @@ class image{
                     break;
                 }
             }
-        }elseif($type==2){  // 单文件
+        }elseif($type==2){  // 多文件2
+            foreach($file as $v){
+                $measure = getimagesize($v['tmp_name']);
+                $width = $measure[0];
+                $height = $measure[1];
+                if(($width < $validMeasure['width'][0] || $width > $validMeasure['width'][1]) || ($height < $validMeasure['height'][0] || $height > $validMeasure['height'][1])){
+                    $ret = false;
+                }
+            }
+        }elseif($type==3){  // 单文件
             $measure = getimagesize($file['tmp_name']);
             $width = $measure[0];
             $height = $measure[1];
@@ -186,7 +205,7 @@ class image{
         $type = $this->type;
         $validSize = $this->size;
         $ret = true;
-        if($type==1){   // 多文件
+        if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $v){
                 $size = filesize($v);
                 if(($size < $validSize['min']*1024*1024) || ($size > $validSize['max']*1024*1024)){
@@ -194,7 +213,14 @@ class image{
                     break;
                 }
             }
-        }elseif($type==2){  // 单文件
+        }elseif($type==2){  // 多文件2
+            foreach($file as $v){
+                $size = filesize($v['tmp_name']);
+                if(($size < $validSize['min']*1024*1024) || ($size > $validSize['max']*1024*1024)){
+                    $ret = false;
+                }
+            }
+        }elseif($type==3){  // 单文件
             $size = filesize($file['tmp_name']);
             if(($size < $validSize['min']*1024*1024) || ($size > $validSize['max']*1024*1024)){
                 $ret = false;
@@ -215,7 +241,7 @@ class image{
         $file = $this->file;
         $type = $this->type;
         $ret = array();
-        if($type==1){   // 多文件
+        if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $k=>$v){
                 $measure = getimagesize($v);
                 $width = $measure[0];
@@ -227,7 +253,19 @@ class image{
                         'size'=>number_format($size,2)
                     );
             }
-        }elseif($type==2){  // 单文件
+        }elseif($type==2){  // 多文件2
+            foreach($file as $k=>$v){
+                $measure = getimagesize($v['tmp_name']);
+                $width = $measure[0];
+                $height = $measure[1];
+                $size = filesize($v['tmp_name'])/1024/1024;
+                $ret[$k] = array(
+                        'width'=>$width,
+                        'height'=>$height,
+                        'size'=>number_format($size,2)
+                    );
+            }
+        }elseif($type==3){  // 单文件
             $measure = getimagesize($file['tmp_name']);
             $width = $measure[0];
             $height = $measure[1];
@@ -398,7 +436,7 @@ class image{
         $crop_height = $crop['height'];
         $thumb_width = $thumb['width'];
         $thumb_height = $thumb['height'];
-        if($type==1){   // 多文件
+        if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $k=>$v){
                 $suffix = $this->getSuffix($v);
                 $name = $dir.md5(rand(100000,999999)).'.'.$suffix;
@@ -418,7 +456,27 @@ class image{
                     $ret[$k] = $name;
                 }
             }
-        }elseif($type==2){  // 单文件
+        }elseif($type==2){  // 多文件2
+            foreach($file as $k=>$v){
+                $suffix = $this->getSuffix($v['tmp_name']);
+                $name = $dir.md5(rand(100000,999999)).'.'.$suffix;
+                $flag = file_put_contents($name,file_get_contents($v['tmp_name']));
+                if(!$flag){
+                    $ret = false;
+                }else{
+                    if($is_scale){
+                        $name = $this->scale($name,$suffix,$ratio);
+                    }
+                    if($is_crop){
+                        $name = $this->crop($name,$suffix,$crop_width,$crop_height);
+                    }
+                    if($is_thumb){
+                        $name = $this->thumb($name,$suffix,$thumb_width,$thumb_height);
+                    }
+                    $ret[$k] = $name;
+                }
+            }
+        }elseif($type==3){  // 单文件
             $suffix = $this->getSuffix($file['tmp_name']);
             $name = $dir.md5(rand(100000,999999)).'.'.$suffix;
             $flag = file_put_contents($name,file_get_contents($file['tmp_name']));
