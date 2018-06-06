@@ -47,7 +47,7 @@ class crawl{
      @return urls 获取到的超链接
      */
     private function geturl($content){
-        $preg = '/<[a|A].*?href=[\'\"]{0,1}([^>\'\"\ ]*).*?>/';
+        $preg = '/<[a|A].*?href=[\'\"]{0,1}([^>\'\"\ ]*).*?>/i';
         $bool = preg_match_all($preg,$content,$res);
         $urls = array();
         if($bool){
