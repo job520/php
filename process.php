@@ -5,7 +5,7 @@ namespace dollarphp;
  * @author [Lee] <[<complet@163.com>]>
  */
 class process{
-    public $num = 10;  #  进程数
+    public $num = 4;  #  进程数
     public $timeout = 4;  #  延迟时间
     public $pipedir = "pipe/";  #  管道目录
     public $logdir = "log/";  #  日志目录
