@@ -36,6 +36,7 @@ class http{
     private $options = array();
     private $ch;
     private $fp;
+    private $progress = false;
     /*
      @desc：内部方法 设置get请求参数
      @param data 请求数据
@@ -153,7 +154,6 @@ class http{
         $host = $info['host'];
         $path = $info['path'];
         $purl = $scheme.'://'.$host.$path.':'.$port;
-        echo $purl;
         $this->options[CURLOPT_PROXY] = $purl;
         return $this;
     }
@@ -201,15 +201,38 @@ class http{
      @param files 文件路径
      */
     public function upload($files){
+        $this->progress = true;
         $data = array();
         $name = $this->name;
         if(is_array($files)){
             foreach($files as $k=>$v){
-                $data["{$name}[{$k}]"]=new CURLFile($v);
+                $data["{$name}[{$k}]"]=new \CURLFile($v);
             }
         }else{
-            $data["{$name}"]=new CURLFile($files);
+            $data["{$name}"]=new \CURLFile($files);
         }
+        ob_start();
+        echo ">>";
+        ob_flush();
+        flush();
+        $last = 0;
+        $diff = 0;
+        $this->options[CURLOPT_PROGRESSFUNCTION] = function($source,$dfilesize,$downsize,$upsize,$ufilesize){
+            global $last;
+            global $diff;
+            if($ufilesize > 0){
+                $percent = round($ufilesize/$upsize*100,2);
+                $diff += $percent - $last;
+                if($diff > 1){
+                    echo "#";
+                    $diff = 0;
+                }
+                $last = $percent;
+            }
+            ob_flush();
+            flush();
+        };
+        $this->options[CURLOPT_NOPROGRESS] = false;
         $this->setpost($data);
         return $this;
     }
@@ -218,13 +241,36 @@ class http{
      @param dir 存储文件目录
      */
     public function download($dir = ''){
+        $this->progress = true;
         $path = $this->path;
         if($dir && !is_dir($dir)){
             mkdir($dir,0755,true);
         }
         $name = strrchr($path, '/');
         $dsep = $dir?'/':'';
+        ob_start();
+        echo ">>";
+        ob_flush();
+        flush();
         $this->fp=fopen('.'.$dsep.$dir.$name, 'w');
+        $last = 0;
+        $diff = 0;
+        $this->options[CURLOPT_PROGRESSFUNCTION] = function($source,$dfilesize,$downsize,$upsize,$ufilesize){
+            global $last;
+            global $diff;
+            if($dfilesize > 0){
+                $percent = round($downsize/$dfilesize*100,2);
+                $diff += $percent - $last;
+                if($diff > 1){
+                    echo "#";
+                    $diff = 0;
+                }
+                $last = $percent;
+            }
+            ob_flush();
+            flush();
+        };
+        $this->options[CURLOPT_NOPROGRESS] = false;
         $this->options[CURLOPT_FILE] = $this->fp;
         $this->setget('');
         return $this;
@@ -238,8 +284,13 @@ class http{
         $this->setopt();
         $ret = curl_exec($ch);
         curl_close($ch);
-        if($this->fp){
-            fclose($this->fp);
+        if($this->progress){
+            if($this->fp){
+                fclose($this->fp);
+            }
+            echo "#<<done";
+            ob_flush();
+            flush();
         }
         return $ret;
     }

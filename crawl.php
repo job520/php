@@ -296,10 +296,10 @@ class crawl{
         $name = $this->name;
         if(is_array($files)){
             foreach($files as $k=>$v){
-                $data["{$name}[{$k}]"]=new CURLFile($v);
+                $data["{$name}[{$k}]"]=new \CURLFile($v);
             }
         }else{
-            $data["{$name}"]=new CURLFile($files);
+            $data["{$name}"]=new \CURLFile($files);
         }
         $this->setpost($data);
         return $this;
