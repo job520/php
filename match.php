@@ -103,3 +103,11 @@ class match{
         return array_unique($users);
     }
 }
+// $str = <<<hh
+// <img src="a.jpg" alt="">
+// <img src="a.png" alt="">
+// <a href="a.html"></a>
+// hh;
+// $match = new match($str);
+// $ret = $match->getimg();
+// var_dump($ret);

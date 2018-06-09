@@ -122,3 +122,25 @@ class process{
         }
     }
 }
+// $process = new process();
+// $process->num = 5;  #  修改进程数为5
+// $process->run('todo');
+// /*
+//  @desc：真实处理业务的方法
+//  @param pid 进程id
+//  */
+// function todo($pid){
+//     $num = 19;  #  总任务数
+//     $anum = ceil($num/5);  #  平均每个进程处理任务数
+//     $lnum = $num - $anum*(5-1);  #  最后一个进程处理任务数
+//     $minnum = $anum*$pid;  #  当前进程处理的最小值
+//     $maxnum;  #  当前进程处理的最大值
+//     if($pid<(5-1)){
+//         $maxnum = $minnum + $anum;
+//     }else{
+//         $maxnum = $num;
+//     }
+//     for($i=$minnum;$i<$maxnum;$i++){
+//         echo "进程号：{$pid}；输出：{$i}".PHP_EOL;
+//     }
+// }

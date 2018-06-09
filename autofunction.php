@@ -1,11 +1,12 @@
 <?php
+namespace dollarphp;
 /**
  * @desc：自动加载方法
+ * @author [Lee] <[<complet@163.com>]>
  */
-namespace dollarphp;
 class autofunction{
     /*
-     * 内部方法：注册自动加载以.php为结尾的文件
+     @desc：内部方法，注册自动加载以.php为结尾的文件
      */
     private function get_files($dir) {
         $files = array();
@@ -31,7 +32,7 @@ class autofunction{
         return $files;
     }
     /*
-     * 内部方法：自动加载函数
+     @desc：内部方法，自动加载函数
      */
     private function load_function($dir){
         $files = array();
@@ -41,10 +42,11 @@ class autofunction{
         }
     }
     /*
-     * 构造方法：自动加载函数
-     * @param $dir 函数文件夹
+     @desc：构造方法，自动加载函数
+     @param dir 函数文件夹
      */
     public function __construct($dir){
         $this->load_function($dir);
     }
 }
+// new autofunction('function');

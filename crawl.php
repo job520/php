@@ -1,5 +1,6 @@
 <?php
 namespace dollarphp;
+use \CURLFile;
 /**
  * @desc：多线程爬虫类
  * @author [Lee] <[<complet@163.com>]>
@@ -296,10 +297,10 @@ class crawl{
         $name = $this->name;
         if(is_array($files)){
             foreach($files as $k=>$v){
-                $data["{$name}[{$k}]"]=new \CURLFile($v);
+                $data["{$name}[{$k}]"]=new CURLFile($v);
             }
         }else{
-            $data["{$name}"]=new \CURLFile($files);
+            $data["{$name}"]=new CURLFile($files);
         }
         $this->setpost($data);
         return $this;
@@ -372,3 +373,15 @@ class crawl{
         }
     }
 }
+// function todo($content){
+//     echo 'ok'.PHP_EOL;
+// }
+// $urls=array(
+//     'www.baidu.com',  
+//     'www.taobao.com'
+// );
+// function trigger($urls = array(),$depth = 2){
+//     $crawl = new crawl($urls);
+//     $crawl->get()->run($depth);
+// }
+// trigger($urls);

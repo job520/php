@@ -1,16 +1,18 @@
 <?php
+namespace dollarphp;
+use \Exception;
 /**
  * @desc：自动加载配置文件
+ * @author [Lee] <[<complet@163.com>]>
  */
-namespace dollarphp;
 class autoconfig{
     /*
-     * 内部方法：获取配置文件的句柄
+     @desc：内部方法，获取配置文件的句柄
      */
     private function get_config($dir) {
         $ret = array();
         if(!is_dir($dir)) {
-            throw new \Exception('无法读取配置文件');
+            throw new Exception('无法读取配置文件');
         }
         $handle = opendir($dir);
         if($handle) {
@@ -24,18 +26,21 @@ class autoconfig{
                             break;
                         }
                     }else {
-                        throw new \Exception('配置文件不存在');
+                        throw new Exception('配置文件不存在');
                     }
                 }
-            }   //  end while
+            }
             closedir($handle);
         }
     }
     /*
-     * 自动加载配置文件
+     @desc：自动加载配置文件
      */
     public function load_config($dir){
         $ret = $this->get_config($dir);
         return $ret;
     }
 }
+// $config = new autoconfig();
+// $ret = $config->load_config('config');
+// var_dump($ret);

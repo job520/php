@@ -1,8 +1,10 @@
 <?php
+namespace dollarphp;
+use \Exception;
 /**
  * @desc：自动加载路由
+ * @author [Lee] <[<complet@163.com>]>
  */
-namespace dollarphp;
 class autoroute{
     private $config = array(
             'default_dir'=>'home',
@@ -11,21 +13,21 @@ class autoroute{
             'default_method'=>'index'
         );
     /*
-     内部方法：注册自动加载句柄
+     @desc：内部方法，注册自动加载句柄
      */
     private static function load($name){
         $name = str_replace('\\',DIRECTORY_SEPARATOR,$name);
         require $name.'.php';
     }
     /*
-     内部方法：自动加载类
+     @desc：内部方法，自动加载类
      */
     private function load_class(){
         spl_autoload_register(__NAMESPACE__.'\\autoroute::load');
     }
     /*
-     构造方法：自动加载控制器、处理自定义错误、处理自定义异常
-     @param $dir 控制器文件夹
+     @desc：构造方法，自动加载控制器
+     @param dir 控制器文件夹
      */
     public function __construct($dir){
         $this->load_class();
@@ -34,7 +36,7 @@ class autoroute{
             $pathinfo = explode('/',$pathinfo);
             $pathinfo = array_filter($pathinfo);
             if(count($pathinfo)<3){
-                throw new \Exception('非法请求');
+                throw new Exception('非法请求');
             }else{
                 if(count($pathinfo)>3){
                     $key = $val = array();
@@ -71,3 +73,4 @@ class autoroute{
         }
     }
 }
+// new autoroute('home');

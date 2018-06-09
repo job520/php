@@ -6,9 +6,24 @@ namespace dollarphp;
  */
 class getrequest{
     /*
-     判断前端传入方式，转换成能用数据
+     @desc：内部函数：过滤危险数据
      */
-    public function getRequestData(){
+    private function safetydata($data){
+        foreach($data as $k=>$v){
+            if(is_array($v)){
+                $data[$k] = $this->safetydata($v);
+            }else{
+                $tmp = trim($v);
+                $tmp = addslashes($tmp);
+                $data[$k] = $tmp;
+            }
+        }
+        return $data;
+    }
+    /*
+     @desc：判断前端传入方式，转换成能用数据
+     */
+    public function getrequestdata(){
         $data;
         $ret;
         $contenttype = strtolower($_SERVER['CONTENT_TYPE']);
@@ -23,22 +38,10 @@ class getrequest{
         }else{
             parse_str(file_get_contents('php://input'),$data);
         }
-        $ret = $this->safetyData($data);
+        $ret = $this->safetydata($data);
         return $ret;
     }
-    /*
-     内部函数：过滤危险数据
-     */
-    private function safetyData($data){
-        foreach($data as $k=>$v){
-            if(is_array($v)){
-                $data[$k] = $this->safetyData($v);
-            }else{
-                $tmp = trim($v);
-                $tmp = addslashes($tmp);
-                $data[$k] = $tmp;
-            }
-        }
-        return $data;
-    }
 }
+// $getrequest = new getrequest();
+// $data = $getrequest->getrequestdata();
+// var_dump($data);

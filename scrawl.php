@@ -107,3 +107,25 @@ class scrawl{
         }
     }
 }
+// $scrawl = new scrawl('http://blog.51cto.com/12173069');
+// $scrawl->run(1);
+// /*
+//  @desc：获取内容的回调
+//  */
+// function getcontent($url){
+//     $content = file_get_contents($url);
+//     return $content;
+// }
+// /*
+//  @desc：处理业务逻辑的回调
+//  */
+/*function todo($content){
+    $preg = '/<[a|A].*?href=[\'\"]{0,1}([^>\'\"\ ]*).*?>/i';
+    $bool = preg_match_all($preg,$content,$res);
+    $urls = array();
+    if($bool){
+        $urls = $res[1];
+    }
+    $urls = array_unique($urls);
+    var_dump($urls);
+}*/

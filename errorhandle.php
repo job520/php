@@ -6,14 +6,14 @@ namespace dollarphp;
  */
 class errorhandle{
     /*
-     构造方法：
+     @desc：构造方法
      */
     public function __construct(){
         $this->error_handle();
         $this->exception_handle();
     }
     /*
-     内部方法：错误处理
+     @desc：内部方法，错误处理
      */
     private function error_handle(){
         set_error_handler(function($l,$m,$f,$li,$c){
@@ -29,7 +29,7 @@ class errorhandle{
         });
     }
     /*
-     内部方法：异常处理
+     @desc：内部方法，异常处理
      */
     private function exception_handle(){
         set_exception_handler(function($e){
@@ -45,3 +45,4 @@ class errorhandle{
         });
     }
 }
+// new errorhandle();

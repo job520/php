@@ -1,5 +1,6 @@
 <?php
 namespace dollarphp;
+use \CURLFile;
 /**
  * @desc：http请求类
  * @author [Lee] <[<complet@163.com>]>
@@ -206,10 +207,10 @@ class http{
         $name = $this->name;
         if(is_array($files)){
             foreach($files as $k=>$v){
-                $data["{$name}[{$k}]"]=new \CURLFile($v);
+                $data["{$name}[{$k}]"]=new CURLFile($v);
             }
         }else{
-            $data["{$name}"]=new \CURLFile($files);
+            $data["{$name}"]=new CURLFile($files);
         }
         ob_start();
         echo ">>";
@@ -310,3 +311,6 @@ class http{
         return $ret;
     }
 }
+// $http = new http('www.baidu.com');
+// $ret = $http->ssl(true)->get()->run();
+// echo $ret;

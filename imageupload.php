@@ -516,3 +516,12 @@ class imageupload{
         return $ret;
     }
 }
+// $file = $_FILES['file'];
+// $imageupload = new imageupload($file);
+// $imageupload->thumb = array(
+//     'is_thumb'=>1,
+//     'width'=>200,
+//     'height'=>500
+// );
+// $ret = $imageupload->save('./');
+// var_dump($ret);
