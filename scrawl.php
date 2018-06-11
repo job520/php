@@ -51,7 +51,7 @@ class scrawl{
     /*
      @desc：内部方法，修复不完整的url
      @param url 原始url
-     @param url 修复好的url
+     @return url 修复好的url
      */
     private function reviseurl($url){
         $info = parse_url($url);
@@ -61,6 +61,8 @@ class scrawl{
         $host = $info["host"];
         $port = $info["port"];
         $path = $info["path"];
+        $query = $info["query"];
+        $fragment = $info["fragment"];
         $url = $scheme . '://';
         if ($user && $pass) {
             $url .= $user . ":" . $pass . "@";
@@ -70,6 +72,12 @@ class scrawl{
             $url .= ":" . $port;
         } 
         $url .= $path;
+        if($query){
+            $url .= '?'.$query;
+        }
+        if($fragment){
+            $url .= '#'.$fragment;
+        }
         return $url;
     }
     /*
