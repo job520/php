@@ -31,7 +31,13 @@ class autoroute{
      */
     public function __construct($dir){
         $this->load_class();
-        $pathinfo = @$_SERVER['PATH_INFO'];
+        global $argv;
+        $mode = php_sapi_name();
+        if($mode == 'cli'){
+            $pathinfo = $argv[1];
+        }else{
+            $pathinfo = @$_SERVER['PATH_INFO'];
+        }
         if($pathinfo){
             $pathinfo = explode('/',$pathinfo);
             $pathinfo = array_filter($pathinfo);
