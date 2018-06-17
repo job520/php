@@ -141,7 +141,7 @@ class validation{
 //             'empty'=>false,
 //             'type'=>'string',
 //             'length'=>array(1,20),
-//             'preg'=>'/^a/'
+//             'preg'=>'/^a$/'
 //         )
 // );
 // $validation = new validation($data);
