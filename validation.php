@@ -79,7 +79,7 @@ class validation{
             }elseif($type=='integer'){
                 $len = mb_strlen($data,"utf8");
             }elseif($type=='double'){
-                $len0 = explode('.',$len0);
+                $len0 = explode('.',$data);
                 $len = mb_strlen($len0[1],"utf8");
             }elseif($type=='array'){
                 $len = count($data);
