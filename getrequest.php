@@ -9,13 +9,15 @@ class getrequest{
      @desc：内部函数：过滤危险数据
      */
     private function safetydata($data){
-        foreach($data as $k=>$v){
-            if(is_array($v)){
-                $data[$k] = $this->safetydata($v);
-            }else{
-                $tmp = trim($v);
-                $tmp = addslashes($tmp);
-                $data[$k] = $tmp;
+        if(is_array($data)){
+            foreach($data as $k=>$v){
+                if(is_array($v)){
+                    $data[$k] = $this->safetydata($v);
+                }else{
+                    $tmp = trim($v);
+                    $tmp = addslashes($tmp);
+                    $data[$k] = $tmp;
+                }
             }
         }
         return $data;
