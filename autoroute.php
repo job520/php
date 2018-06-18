@@ -30,6 +30,7 @@ class autoroute{
      @param dir 控制器文件夹
      */
     public function __construct($dir){
+        mb_internal_encoding("UTF-8");
         $this->load_class();
         global $argv;
         $mode = php_sapi_name();
