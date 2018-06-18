@@ -75,12 +75,12 @@ class validation{
             $max = abs($len_arr[1]);
             $type = gettype($data);
             if($type=='string'){
-                $len = mb_strlen($data);
+                $len = mb_strlen($data,"utf8");
             }elseif($type=='integer'){
-                $len = mb_strlen($data);
+                $len = mb_strlen($data,"utf8");
             }elseif($type=='double'){
                 $len0 = explode('.',$len0);
-                $len = mb_strlen($len0[1]);
+                $len = mb_strlen($len0[1],"utf8");
             }elseif($type=='array'){
                 $len = count($data);
             }elseif($type=='object'){
