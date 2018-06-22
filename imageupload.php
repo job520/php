@@ -439,7 +439,7 @@ class imageupload{
         if($type==1){   // 多文件1
             foreach($file['tmp_name'] as $k=>$v){
                 $suffix = $this->getSuffix($v);
-                $name = $dir.md5(rand(100000,999999)).'.'.$suffix;
+                $name = $dir.md5(mt_rand(100000,999999).time()).'.'.$suffix;
                 $flag = file_put_contents($name,file_get_contents($v));
                 if(!$flag){
                     $ret = false;
