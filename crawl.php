@@ -382,7 +382,12 @@ class crawl{
     }
 }
 // function todo($content){
-//     echo 'ok'.PHP_EOL;
+//     set_time_limit(0);
+//     ob_start();
+//     ob_end_flush();
+//     ob_implicit_flush(1);
+//     echo "OK"."<br/>";
+//     echo str_repeat(" ",4096);
 // }
 // $urls=array(
 //     'www.baidu.com',  
