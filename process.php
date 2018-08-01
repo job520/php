@@ -69,7 +69,7 @@ class process{
             $cpid = pcntl_fork();  #  创建子进程
             if ($cpid == 0) {
                 #  子进程过程
-                call_user_func($name,$i,$data);
+                call_user_func($name,$i,$data,$num);
                 $pw = fopen($pipefile, 'w');
                 fwrite($pw, $i."\n");  #  当前任务处理完比，在管道中写入数据
                 fclose($pw);
@@ -132,13 +132,13 @@ class process{
 //  @desc：真实处理业务的方法
 //  @param pid 进程id
 //  */
-// function todo($pid,$data){
+// function todo($pid,$data,$count){
 //     $num = count($data);  #  总任务数
-//     $anum = ceil($num/5);  #  平均每个进程处理任务数
-//     $lnum = $num - $anum*(5-1);  #  最后一个进程处理任务数
+//     $anum = ceil($num/$count);  #  平均每个进程处理任务数
+//     $lnum = $num - $anum*($count-1);  #  最后一个进程处理任务数
 //     $minnum = $anum*$pid;  #  当前进程处理的最小值
 //     $maxnum;  #  当前进程处理的最大值
-//     if($pid<(5-1)){
+//     if($pid<($count-1)){
 //         $maxnum = $minnum + $anum;
 //     }else{
 //         $maxnum = $num;
