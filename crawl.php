@@ -33,6 +33,9 @@ class crawl{
     public $depth = 3;  #  重定向深度，默认3
     public $name = 'file';  #  上传文件的名字，默认file
     public $cookie = 'cookie.txt';  #  模拟登录时cookie存储在本地的文件，默认cookie_n
+    public $request = 1;  #  请求方式：1GET，2POST
+    public $match = 1;  #  匹配的内容 1url 2图片 3音频 4视频 5段落文本
+    public $file;  #  存储的文件
     private $schemes = array();
     private $hosts = array();
     private $paths = array();
@@ -60,7 +63,7 @@ class crawl{
     /*
      @desc：内部方法，修复不完整的url
      @param url 原始url
-     @return url 修复好的url
+     @param url 修复好的url
      */
     private function reviseurl($url){
         $info = parse_url($url);
@@ -70,8 +73,6 @@ class crawl{
         $host = $info["host"];
         $port = $info["port"];
         $path = $info["path"];
-        $query = $info["query"];
-        $fragment = $info["fragment"];
         $url = $scheme . '://';
         if ($user && $pass) {
             $url .= $user . ":" . $pass . "@";
@@ -81,30 +82,24 @@ class crawl{
             $url .= ":" . $port;
         } 
         $url .= $path;
-        if($query){
-            $url .= '?'.$query;
-        }
-        if($fragment){
-            $url .= '#'.$fragment;
-        }
         return $url;
     }
     /*
      @desc：内部方法，调用回调函数进行业务处理
      @param content 传入到回调函数的参数
      */
-    private function todo($content){
+    private function todo($content,$match,$file){
         $calltodo = $this->calltodo;
-        call_user_func($calltodo,$content);
+        call_user_func($calltodo,$content,$match,$file);
     }
     /*
      @desc：触发爬虫程序的回调函数
      @param urls 待处理的url数组
      @param depth 处理深度
      */
-    private function trigger($urls,$depth){
+    private function trigger($urls,$file,$depth,$request,$match){
         $calltrigger = $this->calltrigger;
-        call_user_func($calltrigger,$urls,$depth);
+        call_user_func($calltrigger,$urls,$file,$depth,$request,$match);
     }
     /*
      @desc：内部方法 设置get请求参数
@@ -340,6 +335,9 @@ class crawl{
         $chs = $this->chs;
         $handle = $this->handle;
         $urls = $this->urls;
+        $request = $this->request;
+        $match = $this->match;
+        $file = $this->file;
         if($depth > 0){
             $depth--;
             $active = null;
@@ -359,7 +357,7 @@ class crawl{
             foreach ($chs as $k => $v) {
                 if (curl_error($chs[$k]) == "") {
                     $content = curl_multi_getcontent($chs[$k]);
-                    $this->todo($content);
+                    $this->todo($content,$match,$file);
                     $aurls = $this->geturl($content);
                     $urls[$k] = $this->reviseurl($urls[$k]);
                     if (is_array($aurls) && !empty($aurls)) {
@@ -371,7 +369,7 @@ class crawl{
                                 $returl[$k1] = $real;
                             }
                         }
-                        $this->trigger($returl,$depth);
+                        $this->trigger($returl,$file,$depth,$request,$match);
                     }
                 }
                 curl_multi_remove_handle($handle, $chs[$k]);  
@@ -381,20 +379,31 @@ class crawl{
         }
     }
 }
-// function todo($content){
-//     set_time_limit(0);
-//     ob_start();
-//     ob_end_flush();
-//     ob_implicit_flush(1);
-//     echo "OK"."<br/>";
-//     echo str_repeat(" ",4096);
+// /*
+//  @desc 执行函数
+//  @param match 匹配的内容 1url 2图片 3音频 4视频 5段落文本
+//  @param content 匹配到的网站内容
+//  @param file 存储内容的文件
+// */
+// function todo($content,$match = 1,$file){
+//     var_dump($content,$match,$file);
 // }
 // $urls=array(
 //     'www.baidu.com',  
 //     'www.taobao.com'
 // );
-// function trigger($urls = array(),$depth = 2){
-//     $crawl = new crawl($urls);
+// /*
+//  @desc 触发函数
+//  @param urls 爬取的url
+//  @param depth 爬取深度
+//  @param request 请求方式 1GET 2POST
+//  @param match 匹配内容
+// */
+// function trigger($urls = array(),$file,$depth = 2,$request = 1,$match = 1){
+//     $crawl = crawl($urls);
+//     $crawl->file = $file;
+//     $crawl->request = $request;
+//     $crawl->match = $match;
 //     $crawl->get()->run($depth);
 // }
-// trigger($urls);
+// trigger($urls,'test.txt');
