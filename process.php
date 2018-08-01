@@ -11,6 +11,7 @@ class process{
     public $logdir = "log/";  #  日志目录
     public $errlog = "err.log";  #  错误日志
     public $successlog = "success.log";  #  成功日志
+    public $data;  #  需要执行多进程的数据
     /*
      @desc：构造方法，创建相关目录，检察是否支持扩展
      */
@@ -54,6 +55,7 @@ class process{
      @param name 执行命令的回调函数
      */
     public function run($name){
+        $data = $this->data;
         $num = $this->num;
         $timeout = $this->timeout;
         $pipedir = $this->pipedir;
@@ -67,7 +69,7 @@ class process{
             $cpid = pcntl_fork();  #  创建子进程
             if ($cpid == 0) {
                 #  子进程过程
-                call_user_func($name,$i);
+                call_user_func($name,$i,$data);
                 $pw = fopen($pipefile, 'w');
                 fwrite($pw, $i."\n");  #  当前任务处理完比，在管道中写入数据
                 fclose($pw);
@@ -124,13 +126,14 @@ class process{
 }
 // $process = new process();
 // $process->num = 5;  #  修改进程数为5
+// $process->data = array(1,2,3,4,5,6,7,8,9,10,11);
 // $process->run('todo');
 // /*
 //  @desc：真实处理业务的方法
 //  @param pid 进程id
 //  */
-// function todo($pid){
-//     $num = 19;  #  总任务数
+// function todo($pid,$data){
+//     $num = count($data);  #  总任务数
 //     $anum = ceil($num/5);  #  平均每个进程处理任务数
 //     $lnum = $num - $anum*(5-1);  #  最后一个进程处理任务数
 //     $minnum = $anum*$pid;  #  当前进程处理的最小值
