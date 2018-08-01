@@ -131,6 +131,8 @@ class process{
 // /*
 //  @desc：真实处理业务的方法
 //  @param pid 进程id
+//  @param data 等待处理的数据
+//  @param count 进程数
 //  */
 // function todo($pid,$data,$count){
 //     $num = count($data);  #  总任务数
