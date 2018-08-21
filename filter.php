@@ -9,7 +9,7 @@ namespace dollarphp;
  */
 class filter{
     public function isvalidurl($data){
-        if(preg_match('/((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/', $data)){
+        if(preg_match('/^((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?$/', $data)){
             return true;
         }else{
             return false;
