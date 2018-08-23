@@ -12,27 +12,7 @@ namespace dollarphp;
  *     @return void
  */
 class scrawl{
-    public $callcontent = 'getcontent';  #  获取给定url页面中的内容的回调函数
-    public $calltodo = 'todo';  #  处理业务逻辑的回调函数 如：把抓取到的内容处理后存到数据库
     private $url;  #  内部属性：当前处理中的url
-    /*
-     @desc：内部方法，调用回调函数获取页面内容
-     @param url 传入到回调函数的参数
-     @return ret 页面内容
-     */
-    private function getcontent($url){
-        $callback = $this->callcontent;
-        $ret = call_user_func($callback,$url);
-        return $ret;
-    }
-    /*
-     @desc：内部方法，调用回调函数进行业务处理
-     @param content 传入到回调函数的参数
-     */
-    private function todo($content){
-        $callback = $this->calltodo;
-        call_user_func($callback,$content);
-    }
     /*
      @desc：内部方法，获取页面中的超链接
      @param content 页面内容
@@ -90,13 +70,13 @@ class scrawl{
      @desc：主方法，执行程序
      @param depth 挖掘深度 默认2
      */
-    public function run($depth = 2){
+    public function run($depth = 2,$backcontent,$backtodo){
         $url = $this->url;
         if($depth > 0){
             $depth--;
-            $content = $this->getcontent($url);
+            $content = call_user_func($backcontent,$url);
             // 业务处理开始
-            $this->todo($content);
+            call_user_func($backtodo,$content);
             // 业务处理结束
             $urls = $this->geturl($content);
             $url = $this->reviseurl($url);
@@ -115,25 +95,23 @@ class scrawl{
         }
     }
 }
-// $scrawl = new scrawl('http://blog.51cto.com/12173069');
-// $scrawl->run(1);
-// /*
-//  @desc：获取内容的回调
-//  */
-// function getcontent($url){
-//     $content = file_get_contents($url);
-//     return $content;
-// }
-// /*
-//  @desc：处理业务逻辑的回调
-//  */
-/*function todo($content){
-    $preg = '/<[a|A].*?href=[\'\"]{0,1}([^>\'\"\ ]*).*?>/i';
-    $bool = preg_match_all($preg,$content,$res);
-    $urls = array();
-    if($bool){
-        $urls = $res[1];
+/*
+$scrawl = new scrawl('http://blog.51cto.com/12173069');
+$scrawl->run(
+    1,
+    function($url){
+        $content = file_get_contents($url);
+        return $content;
+    },
+    function($content){
+        $preg = '/<[a|A].*?href=[\'\"]{0,1}([^>\'\"\ ]*).*?>/i';
+        $bool = preg_match_all($preg,$content,$res);
+        $urls = array();
+        if($bool){
+            $urls = $res[1];
+        }
+        $urls = array_unique($urls);
+        var_dump($urls);
     }
-    $urls = array_unique($urls);
-    var_dump($urls);
-}*/
+);
+*/

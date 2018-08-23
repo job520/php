@@ -127,14 +127,13 @@ class process{
 // $process = new process();
 // $process->num = 5;  #  修改进程数为5
 // $process->data = array(1,2,3,4,5,6,7,8,9,10,11);
-// $process->run('todo');
 // /*
 //  @desc：真实处理业务的方法
 //  @param pid 进程id
 //  @param data 等待处理的数据
 //  @param count 进程数
 //  */
-// function todo($pid,$data,$count){
+// $process->run(function($pid,$data,$count){
 //     $num = count($data);  #  总任务数
 //     $anum = ceil($num/$count);  #  平均每个进程处理任务数
 //     $lnum = $num - $anum*($count-1);  #  最后一个进程处理任务数
@@ -147,5 +146,5 @@ class process{
 //     }
 //     for($i=$minnum;$i<$maxnum;$i++){
 //         echo "进程号：{$pid}；输出：{$i}".PHP_EOL;
-//     }
-// }
+//     }    
+// });
