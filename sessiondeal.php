@@ -5,7 +5,7 @@ use Medoo\Medoo;
  * @desc：session类
  * @author [Lee] <[<complet@163.com>]>
  */
-class SessionDeal{
+class sessiondeal{
     private $database;  // 数据库对象
     private $redis;  // redis对象
     public $config_db = array(  // 数据库配置
@@ -103,7 +103,7 @@ class SessionDeal{
         return true;
     }
 }
-// $handler = new SessionDeal();
+// $handler = new sessiondeal();
 // session_set_save_handler(
 //         array($handler, 'open'),
 //         array($handler, 'close'),
