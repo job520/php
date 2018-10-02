@@ -50,7 +50,7 @@ class http{
         $path = $this->path;
         $query = $this->query;
         $sep = ($query || !empty($data))?"?":"";
-        $qurl = $scheme.'://'.$host.$path.':'.$port.$sep.$query.$data;
+        $qurl = $scheme.'://'.$host.':'.$port.$path.$sep.$query.$data;
         $this->options[CURLOPT_URL] = $qurl;
         return $this;
     }
@@ -65,7 +65,7 @@ class http{
         $path = $this->path;
         $query = $this->query;
         $sep = $query?"?":"";
-        $qurl = $scheme.'://'.$host.$path.':'.$port.$sep.$query;
+        $qurl = $scheme.'://'.$host.':'.$port.$path.$sep.$query;
         $this->options[CURLOPT_URL] = $qurl;
         $this->options[CURLOPT_POST] = 1;
         $this->options[CURLOPT_POSTFIELDS] = $data;
@@ -159,7 +159,7 @@ class http{
         $scheme = $info['scheme']?:'http';
         $host = $info['host'];
         $path = $info['path'];
-        $purl = $scheme.'://'.$host.$path.':'.$port;
+        $purl = $scheme.'://'.$host.':'.$port.$path;
         $this->options[CURLOPT_PROXY] = $purl;
         return $this;
     }
@@ -316,6 +316,6 @@ class http{
         return $ret;
     }
 }
-// $http = new http('www.baidu.com');
-// $ret = $http->ssl(true)->get()->run();
+// $http = new http('//www.baidu.com/a/b');
+// $ret = $http->get()->run();
 // echo $ret;
