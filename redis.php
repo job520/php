@@ -1,9 +1,4 @@
 <?php
-namespace dollarphp;
-/**
- * @desc：redis类
- * @author [Lee] <[<complet@163.com>]>
- */
 class phpredis extends Redis{
     /*
      构造函数：实例化redis类
@@ -42,21 +37,17 @@ class phpredis extends Redis{
         return $ret;
     }
     /*
-     获取值
-     @param     string      name        键名
-     @return    mix         ret         成功返回值，失败返回false
+     不存在时才设置
+     @param     string      name    键名
+     @param     string      value   值
+     @param     string      expire  过期时间，单位：秒，0无限制。默认0
+     @return    bool        ret     true：设置成功；false：设置失败
      */
-    public function rget($name){
-        $ret = $this->get($name);
-        return $ret;
-    }
-    /*
-     删除值
-     @param     string      name        键名
-     @return    bool        ret         成功返回true，失败返回false
-     */
-    public function rdel($name){
-        $ret = $this->delete($name);
+    public function rsetnx($name,$value,$expire = 0){
+        $ret = $this->setnx($name,$value);
+        if($expire){
+            $this->expire($name,$expire);
+        }
         return $ret;
     }
     /*
@@ -93,6 +84,7 @@ class phpredis extends Redis{
                                         )
      */
     public function radd($table,$id,$data){
+        $this->watch($table.'_'.$id,$table.'_id');
         $this->multi();
         $this->hMSet(
             $table.'_'.$id,
@@ -100,6 +92,7 @@ class phpredis extends Redis{
         );
         $this->sAdd($table.'_id',$id);
         $ret = $this->exec();
+        $this->unwatch($table.'_'.$id,$table.'_id');
         return $ret;
     }
     /*
@@ -114,10 +107,12 @@ class phpredis extends Redis{
                                         )
      */
     public function rdelete($table,$id){
+        $this->watch($table.'_'.$id,$table.'_id');
         $this->multi();
         $this->del($table.'_'.$id);
         $this->sRem($table.'_id',$id,0);
         $ret = $this->exec();
+        $this->unwatch($table.'_'.$id,$table.'_id');
         return $ret;
     }
     /*
@@ -228,12 +223,14 @@ class phpredis extends Redis{
                 'sort' => 'asc'
             )
         );
+        $this->watch($table.'_'.$id,$table.'_id');
         $this->multi();
         foreach($ret1 as $id){
             $this->del($table.'_'.$id);
         }
         $this->del($table.'_id');
         $ret = $this->exec();
+        $this->unwatch($table.'_'.$id,$table.'_id');
         return $ret;
     }
     /*
@@ -388,22 +385,17 @@ class phpredis extends Redis{
         return $ret;
     }
 }
-// $config = array(
-//          'host' => '127.0.0.1',
-//          'port' => '6379',
-//          'pass' => 'zz123456',
-//      );
-// $phpredis = new phpredis($config);
-// $table = "lee_user";
-// $id1 = 1;
-// $data1 = array(
-//          'name' => 'aa'
-//      );
-// $id2 = 2;
-// $data2 = array(
-//          'name' => 'bb'
-//      );
-// $phpredis->radd($table,$id1,$data1);
-// $phpredis->radd($table,$id2,$data2);
-// $ret = $phpredis->rflush($table);
-// var_dump($ret);
+$config = array(
+         'host' => '127.0.0.1',
+         'port' => '6379',
+         'pass' => 'zz123456',
+     );
+$phpredis = new phpredis($config);
+$phpredis->watch('aa','bb');
+$phpredis->multi();
+$phpredis->set('aa','aa');
+sleep(5);
+$phpredis->set('bb','bb');
+$ret = $phpredis->exec();
+$phpredis->unwatch('aa','bb');
+var_dump($ret);
