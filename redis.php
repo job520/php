@@ -356,6 +356,15 @@ class phpredis extends Redis{
         return $ret;
     }
     /*
+     获取团队所有成员
+     @param     string      team        团队名
+     @return    array    	ret         团队成员组成的数组
+     */
+    public function rsgetall($team){
+        $ret = $this->sMembers($team);
+        return $ret;
+    }
+    /*
      查询团队中的成员数量
      @param     string      team        团队名
      @return    string/0    ret         返回团队中的成员数量或0查询失败
@@ -385,17 +394,17 @@ class phpredis extends Redis{
         return $ret;
     }
 }
-$config = array(
-         'host' => '127.0.0.1',
-         'port' => '6379',
-         'pass' => 'zz123456',
-     );
-$phpredis = new phpredis($config);
-$phpredis->watch('aa','bb');
-$phpredis->multi();
-$phpredis->set('aa','aa');
-sleep(5);
-$phpredis->set('bb','bb');
-$ret = $phpredis->exec();
-$phpredis->unwatch('aa','bb');
-var_dump($ret);
+// $config = array(
+//          'host' => '127.0.0.1',
+//          'port' => '6379',
+//          'pass' => 'zz123456',
+//      );
+// $phpredis = new phpredis($config);
+// $phpredis->watch('aa','bb');
+// $phpredis->multi();
+// $phpredis->set('aa','aa');
+// sleep(5);
+// $phpredis->set('bb','bb');
+// $ret = $phpredis->exec();
+// $phpredis->unwatch('aa','bb');
+// var_dump($ret);
